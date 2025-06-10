@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Aventura 8-Bit</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Pantalla de bienvenida -->
+  <div id="pantalla-bienvenida" class="pantalla">
+    <h1>Aventura 8-Bit</h1>
+    <p>Presiona comenzar para iniciar tu aventura.</p>
+    <button id="comenzar-btn">Comenzar</button>
+  </div>
+
+  <!-- Pantalla de elección de clase -->
+  <div id="pantalla-clase" class="pantalla oculto">
+    <h2>Elige tu clase:</h2>
+    <div class="clases">
+      <button class="clase-btn" data-clase="Guerrero">🗡 Guerrero</button>
+      <button class="clase-btn" data-clase="Mago">✨ Mago</button>
+      <button class="clase-btn" data-clase="Explorador">🏹 Explorador</button>
+    </div>
+  </div>
+
+  <!-- Pantalla principal del juego -->
+  <div id="pantalla-juego" class="pantalla oculto">
+    <div id="hud">
+      <p><strong>Clase:</strong> <span id="clase-actual"></span></p>
+      <p><strong>Vida:</strong> <span id="vida-actual">100</span>/100</p>
+      <p><strong>Inventario:</strong> <span id="inventario"></span></p>
+    </div>
+
+    <div id="historia">
+      <p class="scene-text" id="texto-escena">Aquí comenzará tu historia...</p>
+      <div id="botones-decision"></div>
+    </div>
+  </div>
+
+  <!-- Pantalla de muerte -->
+  <div id="pantalla-muerte" class="pantalla oculto">
+    <h2>💀 Moriste 💀</h2>
+    <p>Intenta de nuevo</p>
+    <button onclick="reiniciarJuego()">Volver a empezar</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
