@@ -39,13 +39,28 @@
     </div>
   </div>
 
+    <!-- Pantalla de combate -->
+  <div id="pantalla-combate" class="pantalla oculto">
+  <h2>¡Combate!</h2>
+  <div id="hud-combate">
+    <p><strong>Tu vida:</strong> <span id="vida-jugador">100</span></p>
+    <p><strong>Vida del enemigo:</strong> <span id="vida-enemigo">50</span></p>
+  </div>
+  <div id="texto-combate">Un enemigo aparece frente a ti.</div>
+  <div id="acciones-combate">
+    <button id="btn-atacar">🗡 Atacar</button>
+    <button id="btn-usar-item">🧪 Usar poción</button>
+    <button id="btn-magia">✨ Magia</button>
+  </div>
+</div>
+
+
   <!-- Pantalla de muerte -->
   <div id="pantalla-muerte" class="pantalla oculto">
-    <h2>💀 Moriste 💀</h2>
-    <p>Intenta de nuevo</p>
-    <button onclick="reiniciarJuego()">Volver a empezar</button>
-  </div>
-
+  <h2>💀 Moriste 💀</h2>
+  <p id="mensaje-muerte">Intenta de nuevo</p>
+  <button id="reiniciar-btn">Reiniciar Juego</button>
+</div>
   <script src="script.js"></script>
 </body>
 </html>
