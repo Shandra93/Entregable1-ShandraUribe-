@@ -288,7 +288,6 @@ function iniciarCombateFinal() {
   textoCombate.textContent = "¡El enemigo final aparece!";
 }
 
-// Acciones del jugador
 document.getElementById('btn-atacar').addEventListener('click', () => turnoJugador("atacar"));
 document.getElementById('btn-magia').addEventListener('click', () => turnoJugador("magia"));
 document.getElementById('btn-usar-item').addEventListener('click', () => {
