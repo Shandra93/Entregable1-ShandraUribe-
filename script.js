@@ -1,4 +1,3 @@
-// Elementos del DOM
 const pantallaBienvenida = document.getElementById('pantalla-bienvenida');
 const pantallaClase = document.getElementById('pantalla-clase');
 const pantallaJuego = document.getElementById('pantalla-juego');
@@ -16,17 +15,21 @@ const textoEscena = document.getElementById('texto-escena');
 const botonesDecision = document.getElementById('botones-decision');
 
 const vidaJugador = document.getElementById('vida-jugador');
+const manaJugador = document.getElementById('mana-jugador');
 const vidaEnemigoSpan = document.getElementById('vida-enemigo');
 const textoCombate = document.getElementById('texto-combate');
 
-// Variables del juego
 let vida = 100;
+let mana = 100;
 let clase = "";
 let inventario = [];
 let escenaActual = 0;
 let vidaEnemigo = 50;
 
-// Eventos
+function esperar(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 comenzarBtn.addEventListener('click', () => {
   pantallaBienvenida.classList.add('oculto');
   pantallaClase.classList.remove('oculto');
@@ -46,10 +49,10 @@ reiniciarBtn.addEventListener('click', () => {
   reiniciarJuego();
 });
 
-// Funciones de historia
 function iniciarHistoria() {
   escenaActual = 0;
   vida = 100;
+  mana = 100;
   inventario = [];
   actualizarHUD();
   mostrarEscena();
@@ -60,61 +63,61 @@ function mostrarEscena() {
   switch (escenaActual) {
     case 0:
       textoEscena.textContent = `Como ${clase}, despiertas en un bosque oscuro. Una poción brilla cerca.`;
-      crearBoton("Tomar poción", () => {
+      crearBoton("Tomar poción", async () => {
         agregarItem("Poción de curación");
         cambiarVida(20);
         escenaActual++;
+        await esperar(1000);
         mostrarEscena();
       });
-      crearBoton("Ignorar y seguir", () => {
+      crearBoton("Ignorar y seguir", async () => {
         cambiarVida(-30);
         escenaActual++;
+        await esperar(1000);
         mostrarEscena();
       });
       break;
 
     case 1:
       textoEscena.textContent = "Te adentras en el bosque. Un cruce aparece frente a ti.";
-      crearBoton("Ir a la derecha", () => {
-        textoEscena.textContent = "Un lobo salvaje te embosca... ¡muere!";
-        setTimeout(() => {
-      cambiarVida(-100);
-    if (vida > 0) {
-      escenaActual++;
-      mostrarEscena();
-    }
-  }, 1500);
-});
-      crearBoton("Ir a la izquierda", () => {
+      crearBoton("Ir a la derecha", async () => {
+        textoEscena.textContent = "Un lobo salvaje te embosca...";
+        await esperar(1500);
+        cambiarVida(-100);
+        if (vida > 0) {
+          escenaActual++;
+          mostrarEscena();
+        }
+      });
+      crearBoton("Ir a la izquierda", async () => {
         textoEscena.textContent = "Encuentras un viejo campamento y descansas.";
         cambiarVida(100);
         escenaActual++;
-        botonesDecision.innerHTML = 'Te sientes recuperado';
-
-        
-        setTimeout(mostrarEscena, 3000);
+        await esperar(2000);
+        mostrarEscena();
       });
       break;
 
     case 2:
       textoEscena.textContent = "Un puente roto bloquea el camino.";
-      crearBoton("Intentar cruzar", () => {
+      crearBoton("Intentar cruzar", async () => {
         const exito = Math.random() > 0.5;
         if (exito) {
           textoEscena.textContent = "¡Logras cruzar con éxito!";
-          escenaActual++;
         } else {
           textoEscena.textContent = "Caes y te golpeas gravemente.";
           cambiarVida(-50);
-          escenaActual++;
         }
-        setTimeout(mostrarEscena, 2000);
+        escenaActual++;
+        await esperar(2000);
+        mostrarEscena();
       });
-      crearBoton("Buscar otro camino", () => {
+      crearBoton("Buscar otro camino", async () => {
         textoEscena.textContent = "Encuentras un pasadizo secreto.";
         agregarItem("Llave antigua");
         escenaActual++;
-        setTimeout(mostrarEscena, 2000);
+        await esperar(2000);
+        mostrarEscena();
       });
       break;
 
@@ -128,17 +131,19 @@ function mostrarEscena() {
     case 4:
       textoEscena.textContent = "Después del combate, encuentras una puerta cerrada.";
       if (inventario.includes("Llave antigua")) {
-        crearBoton("Usar llave", () => {
+        crearBoton("Usar llave", async () => {
           textoEscena.textContent = "La puerta se abre. ¡Has escapado!";
           escenaActual++;
-          setTimeout(mostrarEscena, 2000);
+          await esperar(2000);
+          mostrarEscena();
         });
       } else {
-        crearBoton("Forzar la puerta", () => {
+        crearBoton("Forzar la puerta", async () => {
           textoEscena.textContent = "Te haces daño forzando la puerta.";
           cambiarVida(-20);
           escenaActual++;
-          setTimeout(mostrarEscena, 2000);
+          await esperar(2000);
+          mostrarEscena();
         });
       }
       break;
@@ -148,11 +153,10 @@ function mostrarEscena() {
       crearBoton("Enfrentar a la sombra", () => {
         iniciarCombateFinal();
       });
-      crearBoton("Huir rápidamente", () => {
+      crearBoton("Huir rápidamente", async () => {
         textoEscena.textContent = "Corres hacia la luz... ¡has sobrevivido!";
-        setTimeout(() => {
-          mostrarPantallaMuerte("final-bueno");
-        }, 3000);
+        await esperar(3000);
+        mostrarPantallaMuerte("final-bueno");
       });
       break;
 
@@ -184,6 +188,13 @@ function cambiarVida(cantidad) {
   actualizarHUD();
 }
 
+function cambiarMana(cantidad) {
+  mana += cantidad;
+  if (mana > 100) mana = 100;
+  if (mana < 0) mana = 0;
+  actualizarHUD();
+}
+
 function agregarItem(item) {
   inventario.push(item);
   actualizarHUD();
@@ -192,23 +203,25 @@ function agregarItem(item) {
 function actualizarHUD() {
   vidaActual.textContent = vida;
   inventarioDOM.textContent = inventario.length > 0 ? inventario.join(', ') : 'Vacío';
+  manaJugador.textContent = mana;
 }
 
-// Pantallas
 function mostrarPantallaMuerte(tipo = "muerte") {
   pantallaJuego.classList.add('oculto');
   pantallaCombate.classList.add('oculto');
   pantallaMuerte.classList.remove('oculto');
 
+  const mensaje = document.getElementById("mensaje-muerte");
   if (tipo === "final-bueno") {
-    document.getElementById("mensaje-muerte").textContent = "¡Has logrado escapar con vida!";
+    mensaje.textContent = "¡Has logrado escapar con vida!";
   } else {
-    document.getElementById("mensaje-muerte").textContent = "Has muerto. Tu aventura termina aquí.";
+    mensaje.textContent = "Has muerto. Tu aventura termina aquí.";
   }
 }
 
 function reiniciarJuego() {
   vida = 100;
+  mana = 100;
   clase = "";
   inventario = [];
   escenaActual = 0;
@@ -216,62 +229,46 @@ function reiniciarJuego() {
   pantallaBienvenida.classList.remove('oculto');
 }
 
-// Combate
-document.getElementById('btn-atacar').addEventListener('click', () => {
-  const daño = Math.floor(Math.random() * 15) + 5;
-  vidaEnemigo -= daño;
-  textoCombate.textContent = `Atacaste al enemigo e hiciste ${daño} de daño.`;
-  if (vidaEnemigo <= 0) {
-    textoCombate.textContent = "¡Has vencido al enemigo!";
-    setTimeout(() => {
-      pantallaCombate.classList.add('oculto');
-      pantallaJuego.classList.remove('oculto');
-      escenaActual++;
-      mostrarEscena();
-    }, 2000);
+async function turnoJugador(tipo) {
+  if (tipo === "atacar") {
+    const daño = Math.floor(Math.random() * 15) + 5;
+    vidaEnemigo -= daño;
+    textoCombate.textContent = `Atacaste e hiciste ${daño} de daño.`;
+  } else if (tipo === "magia" && mana >= 20) {
+    const daño = Math.floor(Math.random() * 25) + 10;
+    vidaEnemigo -= daño;
+    cambiarMana(-20);
+    textoCombate.textContent = `Usaste magia e hiciste ${daño} de daño.`;
   } else {
-    setTimeout(turnoEnemigo, 1000);
-  }
-});
-
-document.getElementById('btn-usar-item').addEventListener('click', () => {
-  if (!inventario.includes("Poción de curación")) {
-    textoCombate.textContent = "No tienes pociones.";
+    textoCombate.textContent = "No tienes suficiente maná.";
     return;
   }
-  cambiarVida(20);
-  inventario.splice(inventario.indexOf("Poción de curación"), 1);
-  textoCombate.textContent = "Usaste una poción. Recuperaste 20 de vida.";
-  actualizarHUD();
-  setTimeout(turnoEnemigo, 1000);
-});
 
-document.getElementById('btn-magia').addEventListener('click', () => {
-  const daño = Math.floor(Math.random() * 25) + 10;
-  vidaEnemigo -= daño;
-  textoCombate.textContent = `Lanzaste una magia e hiciste ${daño} de daño.`;
+  actualizarHUDCombate();
+
   if (vidaEnemigo <= 0) {
     textoCombate.textContent = "¡Has vencido al enemigo!";
-    setTimeout(() => {
-      pantallaCombate.classList.add('oculto');
-      pantallaJuego.classList.remove('oculto');
-      escenaActual++;
-      mostrarEscena();
-    }, 2000);
+    await esperar(1500);
+    pantallaCombate.classList.add('oculto');
+    pantallaJuego.classList.remove('oculto');
+    escenaActual++;
+    mostrarEscena();
   } else {
-    setTimeout(turnoEnemigo, 1000);
+    await esperar(1000);
+    turnoEnemigo();
   }
-});
+}
 
 function turnoEnemigo() {
   const daño = Math.floor(Math.random() * 12) + 5;
-  textoCombate.textContent = `El enemigo te ataca y te hace ${daño} de daño.`;
+  textoCombate.textContent = `El enemigo te golpea con ${daño} de daño.`;
   cambiarVida(-daño);
-  if (vida > 0) actualizarHUDCombate();
+  actualizarHUDCombate();
 }
 
 function actualizarHUDCombate() {
   vidaJugador.textContent = vida;
+  manaJugador.textContent = mana;
   vidaEnemigoSpan.textContent = vidaEnemigo;
 }
 
@@ -290,3 +287,18 @@ function iniciarCombateFinal() {
   actualizarHUDCombate();
   textoCombate.textContent = "¡El enemigo final aparece!";
 }
+
+// Acciones del jugador
+document.getElementById('btn-atacar').addEventListener('click', () => turnoJugador("atacar"));
+document.getElementById('btn-magia').addEventListener('click', () => turnoJugador("magia"));
+document.getElementById('btn-usar-item').addEventListener('click', () => {
+  if (inventario.includes("Poción de curación")) {
+    cambiarVida(20);
+    inventario.splice(inventario.indexOf("Poción de curación"), 1);
+    textoCombate.textContent = "Usaste una poción. Recuperaste 20 de vida.";
+    actualizarHUD();
+    setTimeout(turnoEnemigo, 1000);
+  } else {
+    textoCombate.textContent = "No tienes pociones.";
+  }
+});
