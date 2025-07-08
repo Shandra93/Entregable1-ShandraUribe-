@@ -2,68 +2,95 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Aventura 8-Bit</title>
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
+
   <!-- Pantalla de bienvenida -->
-  <div id="pantalla-bienvenida" class="pantalla">
+  <div id="pantalla-bienvenida" class="pantalla activa">
     <h1>Aventura 8-Bit</h1>
-    <p>Presiona comenzar para iniciar tu aventura.</p>
-    <button id="comenzar-btn">Comenzar</button>
+    <button id="comenzar-btn" class="btn-principal">Comenzar</button>
   </div>
 
-  <!-- Pantalla de elección de clase -->
+  <!-- Pantalla de selección de clase -->
   <div id="pantalla-clase" class="pantalla oculto">
-    <h2>Elige tu clase:</h2>
+    <h2>Elige tu clase</h2>
     <div class="clases">
-      <button class="clase-btn" data-clase="Guerrero">🗡 Guerrero</button>
-      <button class="clase-btn" data-clase="Mago">✨ Mago</button>
-      <button class="clase-btn" data-clase="Explorador">🏹 Explorador</button>
+      <button class="clase-btn" data-clase="Guerrero">🗡️ Guerrero</button>
+      <button class="clase-btn" data-clase="Mago">🧙 Mago</button>
+      <button class="clase-btn" data-clase="Pícaro">🗡️ Pícaro</button>
     </div>
   </div>
 
-  <!-- Pantalla principal del juego -->
+  <!-- Pantalla del juego -->
   <div id="pantalla-juego" class="pantalla oculto">
+    <h2>Clase: <span id="clase-actual"></span></h2>
+
     <div id="hud">
-      <p><strong>Clase:</strong> <span id="clase-actual"></span></p>
-      <p><strong>Vida:</strong> <span id="vida-actual">100</span>/100</p>
-      <p><strong>Maná:</strong> <span id="mana-actual">100</span>/100</p>
-      <p><strong>Inventario:</strong> <span id="inventario"></span></p>
+      <div class="barra-container vida">
+        <div id="barra-vida" class="barra">
+          <span id="texto-barra-vida" class="barra-texto">100 / 100</span>
+        </div>
+      </div>
+      <div class="barra-container mana">
+        <div id="barra-mana" class="barra">
+          <span id="texto-barra-mana" class="barra-texto">100 / 100</span>
+        </div>
+      </div>
+
+      <p>Inventario: <span id="inventario">Vacío</span></p>
+
+      <div id="estadisticas-jugador" style="margin-top: 10px;">
+        Nivel: <span id="nivel-actual">1</span> |
+        Experiencia: <span id="experiencia-actual">0</span> / 100
+      </div>
+
+      <p id="hechizo-info"></p>
+
+      <div class="botones-secundarios">
+        <button id="btn-guardar">Guardar Progreso</button>
+        <button id="reiniciar-btn">🔄 Reiniciar Juego</button>
+
+        <button id="btn-borrar-progreso" style="display: none;">Borrar Progreso</button>
+      </div>
     </div>
 
-    <div id="historia">
-      <p class="scene-text" id="texto-escena">Aquí comenzará tu historia...</p>
-      <div id="botones-decision"></div>
-    </div>
+    <div id="texto-escena" class="texto-escena"></div>
+    <div id="botones-decision"></div>
+
   </div>
 
-    <!-- Pantalla de combate -->
+  <!-- Pantalla de combate -->
   <div id="pantalla-combate" class="pantalla oculto">
-  <h2>¡Combate!</h2>
-  <div id="hud-combate">
-    <p><strong>Tu vida:</strong> <span id="vida-jugador">100</span></p>
-    <p><strong>Tu mana:</strong> <span id="mana-jugador">100</span></p>
+    <h2>⚔️ Combate</h2>
 
-    <p><strong>Vida del enemigo:</strong> <span id="vida-enemigo">50</span></p>
+    <p>🧟 Vida enemigo: <span id="vida-enemigo">50</span></p>
+    <p>❤️ Vida jugador: <span id="vida-jugador">100</span></p>
+    <p>💧 Maná jugador: <span id="mana-jugador">100</span></p>
+
+    <p id="texto-combate">El combate ha comenzado...</p>
+
+    <div id="acciones-combate">
+      <button id="btn-atacar">Atacar</button>
+      <button id="btn-magia">Usar Magia</button>
+      <button id="btn-usar-item" disabled>Usar Ítem</button>
+    </div>
   </div>
-  <div id="texto-combate">Un enemigo aparece frente a ti.</div>
-  <div id="acciones-combate">
-    <button id="btn-atacar">🗡 Atacar</button>
-    <button id="btn-usar-item">🧪 Usar poción</button>
-    <button id="btn-magia">✨ Magia</button>
-  </div>
-</div>
 
-
-  <!-- Pantalla de muerte -->
+  <!-- Pantalla de muerte o final -->
   <div id="pantalla-muerte" class="pantalla oculto">
-  <h2>💀 Moriste 💀</h2>
-  <p id="mensaje-muerte">Intenta de nuevo</p>
-  <button id="reiniciar-btn">Reiniciar Juego</button>
-</div>
+    <h2 id="mensaje-muerte"></h2>
+    <button id="reiniciar-btn-muerte">🔁 Reiniciar Juego</button>
+  </div>
+
+  <!-- Botón flotante de prueba de combate -->
+  <div id="btn-probar-combate-container" style="display: none; position: fixed; bottom: 10px; right: 10px;">
+    <button id="btn-probar-combate">⚔️ Probar Combate</button>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>

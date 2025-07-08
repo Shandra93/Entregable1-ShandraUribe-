@@ -1,86 +1,171 @@
-body {
-  font-family: 'Press Start 2P', monospace;
-  background-color: #0d0d0d;
-  color: #ffffff;
-  text-align: center;
+/* --- Reset & Base --- */
+* {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+}
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+body {
+  font-family: 'Press Start 2P', monospace;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  background: #111 url('https://i.pinimg.com/736x/1f/e8/ed/1fe8edf3fdd75f105f34c5ef4812e8f1.jpgRpnrm.png') center/cover no-repeat;
+  color: #eee;
 }
 
+/* --- Pantallas centradas absolutos --- */
 .pantalla {
-  width: 90%;
-  max-width: 800px;
-  padding: 30px;
-}
-
-h1, h2, p {
-  margin-bottom: 20px;
-}
-
-button {
-  font-family: 'Press Start 2P', monospace;
-  background-color: #222;
-  color: #fff;
-  border: 2px solid #fff;
-  padding: 10px 20px;
-  font-size: 12px;
-  cursor: pointer;
-  margin: 5px;
-}
-
-button:hover {
-  background-color: #444;
-}
-
-.oculto {
-  display: none;
-}
-
-.clases {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-#hud {
-  border: 2px solid #fff;
-  padding: 10px;
-  margin-bottom: 20px;
-  background-color: #111;
-}
-
-#historia {
-  background-color: #000;
-  padding: 20px;
-  border: 2px solid #fff;
-}
-
-#botones-decision {
-  margin-top: 20px;
-}
-
-#pantalla-combate {
-  background-color: #111;
-  border: 4px solid #fff;
-  padding: 30px;
-  box-shadow: 0 0 20px #ff0;
+  position: absolute;
   width: 90%;
   max-width: 600px;
-  margin: auto;
+  height: 80%;
+  background: rgba(0,0,0,0.8);
+  border: 4px solid #0ff;
+  border-radius: 8px;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  overflow: hidden;
+}
+.pantalla.activa {
+  display: flex;
 }
 
-#acciones-combate {
-  margin-top: 20px;
+/* --- Títulos --- */
+h1, h2 {
+  color: #0ff;
+  text-shadow: 0 0 10px #0fa;
+  text-align: center;
+}
+
+/* --- HUD --- */
+#hud {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  align-items: center;
+  gap: 10px;
+}
+.barra-container {
+  background: #333;
+  border: 2px solid #0ff;
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+.barra {
+  height: 24px;
+  width: 100%;
+  background: linear-gradient(90deg, #0f0, #0a0);
+  position: relative;
+}
+.barra.mana {
+  background: linear-gradient(90deg, #00f, #005);
+}
+.barra-texto {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  color: #fff;
+  top: 0; left: 0;
+  font-size: 12px;
+  line-height: 24px;
+  text-shadow: 1px 1px #000;
 }
 
-#acciones-combate button {
-  width: 200px;
+/* --- Inventario y estadísticas --- */
+#estadisticas-jugador {
+  color: #0ff;
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+/* --- Texto de escena --- */
+.texto-escena {
+  background: #000;
+  border: 2px solid #0ff;
+  border-radius: 4px;
+  padding: 10px;
+  flex: 1;
+  margin: 10px 0;
+  overflow-y: auto;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* --- Botones de decisión --- */
+#botones-decision {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+button {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 12px;
+  color: #000;
+  background: #0ff;
+  border: 2px solid #0aa;
+  border-radius: 4px;
+  padding: 10px 16px;
+  cursor: pointer;
+  min-width: 120px;
+  text-align: center;
+  text-shadow: none;
+}
+button:hover:not(:disabled) {
+  background: #0ee;
+  border-color: #0dd;
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* --- Botón principal --- */
+.btn-principal {
+  background: #ff0;
+  border-color: #aa0;
+}
+.btn-principal:hover:not(:disabled) {
+  background: #ffee00;
+}
+
+/* --- Combate --- */
+#pantalla-combate p, #pantalla-combate button {
+  margin: 6px 0;
+}
+
+/* --- Muerte --- */
+#pantalla-muerte h2 {
+  color: #f00;
+  font-size: 16px;
+  text-shadow: 0 0 6px #f55;
+}
+
+/* --- Probar Combate --- */
+#btn-probar-combate-container {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 999;
+}
+#btn-probar-combate {
+  background: #f0f;
+  border: 2px solid #a0a;
+  color: #fff;
+}
+
+/* --- Animaciones --- */
+@media (max-height: 600px) {
+  .texto-escena { font-size: 12px; }
+  button { font-size: 10px; padding: 8px; min-width: 100px; }
 }
