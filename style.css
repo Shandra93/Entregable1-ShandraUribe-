@@ -5,44 +5,74 @@
   box-sizing: border-box;
 }
 html, body {
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
+  background: #18181b;
+  color: #fff;
+  font-family: 'Press Start 2P', monospace;
   overflow: hidden;
 }
+
 body {
-  font-family: 'Press Start 2P', monospace;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #111 url('https://i.pinimg.com/736x/1f/e8/ed/1fe8edf3fdd75f105f34c5ef4812e8f1.jpgRpnrm.png') center/cover no-repeat;
-  color: #eee;
+  min-height: 100vh;
 }
 
-/* --- Pantallas centradas absolutos --- */
+/* --- Pantallas --- */
 .pantalla {
-  position: absolute;
-  width: 90%;
-  max-width: 600px;
-  height: 80%;
-  background: rgba(0,0,0,0.8);
-  border: 4px solid #0ff;
-  border-radius: 8px;
   display: none;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  padding: 20px;
-  overflow: hidden;
-}
-.pantalla.activa {
-  display: flex;
+  justify-content: flex-start;
+  width: 400px;
+  height: auto;
+  min-width: 250px;
+  min-height: 250px;
+  max-width: 98vw;
+  max-height: 98vh;
+  background: linear-gradient(135deg, #23232b 80%, #18181b 100%);
+  border: 4px solid #ffd700;
+  border-radius: 18px;
+  box-shadow: 0 0 24px #000, 0 0 0 8px #23232b inset;
+  padding: 24px 18px 18px 18px;
+  gap: 18px;
+  transition: box-shadow 0.2s, border-color 0.2s;
+  text-align: center;
 }
 
-/* --- Títulos --- */
+.pantalla.activa {
+  display: flex;
+  animation: fadein 0.5s cubic-bezier(.4,2,.6,1);
+  justify-content: center;
+}
+
+@keyframes fadein {
+  from { opacity: 0; transform: scale(0.97);}
+  to { opacity: 1; transform: scale(1);}
+}
+
+/* --- Títulos y textos --- */
 h1, h2 {
-  color: #0ff;
-  text-shadow: 0 0 10px #0fa;
-  text-align: center;
+  color: #ffd700;
+  text-shadow: 0 0 8px #fff, 0 0 2px #000;
+  margin-bottom: 8px;
+  margin-top: 0;
+  letter-spacing: 1px;
+}
+
+h1 {
+  font-size: 1.5rem;
+}
+
+h2 {
+  font-size: 1.1rem;
+}
+
+.texto-brillante {
+  color: #fffbe7;
+  text-shadow: 0 0 8px #ffd700, 0 0 2px #fff;
 }
 
 /* --- HUD --- */
@@ -51,121 +81,259 @@ h1, h2 {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  margin-bottom: 6px;
+  align-items: center;
 }
+
 .barra-container {
-  background: #333;
-  border: 2px solid #0ff;
-  border-radius: 4px;
+  background: #23232b;
+  border: 2px solid #fff;
+  border-radius: 8px;
   position: relative;
   overflow: hidden;
+  width: 90%;
+  height: 22px;
+  margin-bottom: 4px;
+  box-shadow: 0 0 8px #ffd700 inset;
 }
+
 .barra {
-  height: 24px;
-  width: 100%;
-  background: linear-gradient(90deg, #0f0, #0a0);
-  position: relative;
+  height: 100%;
+  background: linear-gradient(90deg, #ff3b3b 80%, #b80000 100%);
+  transition: width 0.3s;
+  border-radius: 8px 0 0 8px;
 }
+
 .barra.mana {
-  background: linear-gradient(90deg, #00f, #005);
+  background: linear-gradient(90deg, #0090ff 80%, #003366 100%);
 }
+
 .barra-texto {
   position: absolute;
   width: 100%;
   text-align: center;
   color: #fff;
   top: 0; left: 0;
-  font-size: 12px;
-  line-height: 24px;
+  font-size: 13px;
+  line-height: 22px;
   text-shadow: 1px 1px #000;
+  font-weight: bold;
+  letter-spacing: 1px;
+  pointer-events: none;
 }
 
 /* --- Inventario y estadísticas --- */
 #estadisticas-jugador {
-  color: #0ff;
-  margin-top: 10px;
-  font-size: 12px;
+  color: #ffd700;
+  font-size: 13px;
+  text-align: center;
+  margin-bottom: 6px;
+  letter-spacing: 1px;
+  background: #23232b;
+  border: 2px solid #ffd700;
+  border-radius: 8px;
+  padding: 4px 0;
+  width: 90%;
+}
+
+#inventario {
+  color: #00e0ff;
+  font-size: 13px;
+  margin-bottom: 6px;
+  text-align: center;
+  word-break: break-word;
+  background: #23232b;
+  border: 2px solid #fff;
+  border-radius: 8px;
+  padding: 4px 0;
+  width: 90%;
+}
+
+#indicador-llave {
+  color: #fff;
+  background: #23232b;
+  border: 2px solid #ffd700;
+  border-radius: 8px;
+  font-size: 13px;
+  text-align: center;
+  margin-bottom: 6px;
+  padding: 4px 0;
+  display: none;
+  letter-spacing: 1px;
+  font-weight: bold;
+  width: 90%;
 }
 
 /* --- Texto de escena --- */
 .texto-escena {
-  background: #000;
-  border: 2px solid #0ff;
-  border-radius: 4px;
-  padding: 10px;
+  background: #18181b;
+  border: 2px solid #fff;
+  border-radius: 8px;
+  padding: 14px 8px;
   flex: 1;
-  margin: 10px 0;
+  margin: 8px 0;
   overflow-y: auto;
   text-align: center;
   font-size: 14px;
-  line-height: 1.4;
+  line-height: 1.5;
+  color: #fff;
+  box-shadow: 0 0 8px #ffd700 inset;
+  max-height: auto;
+  min-height: 40px;
+  transition: background 0.2s;
+  scrollbar-width: thin;
+  scrollbar-color: #ffd700 #18181b;
+  width: 96%;
 }
 
-/* --- Botones de decisión --- */
+.texto-escena::-webkit-scrollbar {
+  width: 8px;
+}
+.texto-escena::-webkit-scrollbar-thumb {
+  background: #ffd700;
+  border-radius: 4px;
+}
+.texto-escena::-webkit-scrollbar-track {
+  background: #18181b;
+}
+
+/* --- Botones --- */
 #botones-decision {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  flex-wrap: nowrap;
+  gap: 22px; /* Aumenta el espacio entre botones */
   justify-content: center;
   margin-bottom: 10px;
+  width: 100%;
 }
-button {
+
+button, .btn-principal {
   font-family: 'Press Start 2P', monospace;
   font-size: 12px;
-  color: #000;
-  background: #0ff;
-  border: 2px solid #0aa;
-  border-radius: 4px;
-  padding: 10px 16px;
+  color: #23232b;
+  background: linear-gradient(180deg, #ffd700 80%, #bfa100 100%);
+  border: 2px solid #fff;
+  border-radius: 8px;
+  padding: 12px 18px;
   cursor: pointer;
-  min-width: 120px;
+  min-width: auto;
   text-align: center;
-  text-shadow: none;
+  box-shadow: 0 0 8px #ffd700;
+  transition: background 0.2s, border-color 0.2s, transform 0.1s;
+  outline: none;
+  margin: 0 0 10px 0; /* Solo margen inferior para separación vertical */
 }
-button:hover:not(:disabled) {
-  background: #0ee;
-  border-color: #0dd;
+
+button:hover:not(:disabled), .btn-principal:hover:not(:disabled) {
+  background: linear-gradient(180deg, #fffbe7 80%, #ffd700 100%);
+  color: #23232b;
+  border-color: #ffd700;
+  transform: scale(1.04);
+  box-shadow: 0 0 16px #ffd700;
 }
+
+button:active:not(:disabled), .btn-principal:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
 button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-/* --- Botón principal --- */
-.btn-principal {
-  background: #ff0;
-  border-color: #aa0;
+button + button,
+.btn-principal + .btn-principal,
+button + .btn-principal,
+.btn-principal + button {
+  margin-left: 18px; 
 }
-.btn-principal:hover:not(:disabled) {
-  background: #ffee00;
+
+/* Centra todos los contenedores de botones */
+#botones-decision,
+.botones-secundarios,
+#acciones-combate,
+.clases {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 22px;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+#botones-decision,
+.botones-secundarios,
+#hud,
+#pantalla-combate {
+  gap: 18px; 
 }
 
 /* --- Combate --- */
 #pantalla-combate p, #pantalla-combate button {
-  margin: 6px 0;
+  margin: 8px 0;
 }
 
-/* --- Muerte --- */
+/* --- Pantalla de muerte --- */
 #pantalla-muerte h2 {
-  color: #f00;
-  font-size: 16px;
-  text-shadow: 0 0 6px #f55;
+  color: #ff3b3b;
+  font-size: 18px;
+  text-shadow: 0 0 8px #ffd700, 0 0 2px #fff;
+  margin-bottom: 12px;
 }
 
-/* --- Probar Combate --- */
-#btn-probar-combate-container {
+/* --- Imagen de escena --- */
+#texto-escena img {
+  max-width: 100%;
+  border: 2px solid #ffd700;
+  border-radius: 8px;
+  margin-top: 10px;
+  box-shadow: 0 0 8px #ffd700;
+}
+
+/* --- Responsive --- */
+@media (max-width: 500px), (max-height: 500px) {
+  .pantalla {
+    width: 98vw;
+    height: 98vw;
+    min-width: 180px;
+    min-height: 180px;
+    padding: 8px 2vw;
+    gap: 8px;
+  }
+  .texto-escena {
+    font-size: 11px;
+    padding: 6px 2px;
+    max-height: 60px;
+  }
+  button, .btn-principal {
+    font-size: 10px;
+    padding: 8px 8px;
+    min-width: 80px;
+  }
+}
+
+/* --- Mejoras de accesibilidad --- */
+button:focus, .btn-principal:focus {
+  outline: 2px solid #0090ff;
+  outline-offset: 2px;
+}
+
+.mensaje-flotante {
   position: fixed;
-  bottom: 16px;
-  right: 16px;
-  z-index: 999;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #23232b;
+  color: #ffd700;
+  border: 2px solid #ffd700;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  z-index: 1000;
+  box-shadow: 0 0 12px #ffd700;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
 }
-#btn-probar-combate {
-  background: #f0f;
-  border: 2px solid #a0a;
-  color: #fff;
-}
-
-/* --- Animaciones --- */
-@media (max-height: 600px) {
-  .texto-escena { font-size: 12px; }
-  button { font-size: 10px; padding: 8px; min-width: 100px; }
+@keyframes fadeout {
+  to { opacity: 0; }
 }

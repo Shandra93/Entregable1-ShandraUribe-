@@ -53,85 +53,92 @@ let enCombate = false;
 let enemigoActual = null;
 
 // --- Hechizos ---
-const hechizosDisponibles = [
-  { nombre: "Bola de Fuego", tipo: "daño", daño: 30, costo: 25 },
-  { nombre: "Rayo Helado", tipo: "daño", daño: 20, costo: 15 },
-  { nombre: "Sanación", tipo: "cura", cura: 25, costo: 20 },
-  { nombre: "Viento Arcano", tipo: "daño", daño: 15, costo: 10 },
-  { nombre: "Luz Sagrada", tipo: "cura", cura: 35, costo: 30 }
-];
+let hechizosDisponibles = [];
 
 // --- Enemigos ---
-const enemigos = [
-  { nombre: "Lobo", vida: 40, dañoMin: 5, dañoMax: 12 },
-  { nombre: "Esqueleto", vida: 50, dañoMin: 8, dañoMax: 15 },
-  { nombre: "Jefe Sombra", vida: 80, dañoMin: 10, dañoMax: 20 }
-];
+let enemigos = [];
+
+async function cargarDatos() {
+  const res = await fetch('data.json');
+  const data = await res.json();
+  hechizosDisponibles = data.hechizos;
+  enemigos = data.enemigos;
+}
 
 // --- Escenas ---
 const escenas = [
   {
-    texto: (clase) => `Como ${clase}, despiertas en un bosque oscuro. Una poción brilla cerca.`,
+    texto: (clase) => `Como ${clase}, despiertas entre hojas húmedas y el eco de criaturas lejanas. Una poción burbujea junto a ti, como si te esperara.`,
     opciones: [
       {
-        texto: "Tomar poción",
+        texto: "Tomar poción misteriosa",
         accion: async () => {
           agregarItem({ nombre: "Poción de curación", tipo: "cura", efecto: 20, usos: 1 });
           cambiarVida(20);
-          await esperar(1200);
+          mostrarTexto("Sientes una energía cálida recorriendo tu cuerpo...");
+          await esperar(2000);
           avanzarEscena();
         }
       },
       {
-        texto: "Ignorar y seguir",
+        texto: "Ignorar y adentrarte en el bosque",
         accion: async () => {
+          mostrarTexto("Un escalofrío te recorre mientras avanzas sin preparación...");
           cambiarVida(-30);
-          await esperar(1200);
+          await esperar(2000);
           avanzarEscena();
         }
       }
     ]
   },
   {
-    texto: () => "Te adentras en el bosque. Un cruce aparece frente a ti.",
+    texto: () => "Los árboles se alzan como columnas negras. Un cruce con neblina se abre frente a ti.",
     opciones: [
       {
-        texto: "Ir a la derecha",
+        texto: "Tomar el camino derecho",
         accion: async () => {
-          mostrarTexto("Un lobo salvaje te embosca...");
-          await esperar(1500);
+          mostrarTexto("De entre los arbustos, un lobo salvaje salta sobre ti con un gruñido feroz...");
+          await esperar(2000);
           iniciarCombate(enemigos[0]);
         }
       },
       {
-        texto: "Ir a la izquierda",
+        texto: "Girar hacia la izquierda",
         accion: async () => {
-          mostrarTexto("Encuentras un viejo campamento y descansas.");
+          mostrarTexto("Encuentras un campamento olvidado. Una hoguera encendida te brinda descanso.");
           cambiarVida(maxVida);
-          await esperar(1500);
+          await esperar(2000);
+          avanzarEscena();
+        }
+      },
+      {
+        texto: "Explorar el claro cercano",
+        accion: async () => {
+          mostrarTexto("Encuentras una pequeña caja de madera oculta bajo unas hojas. Dentro hay una llave antigua.");
+          agregarItem({ nombre: "Llave antigua", tipo: "clave", usos: 1 });
+          await esperar(2000);
           avanzarEscena();
         }
       }
     ]
   },
   {
-    texto: () => "Un puente roto bloquea el camino.",
+    texto: () => "Sigues avanzando y encuentras un arroyo. El agua es cristalina y parece segura.",
     opciones: [
       {
-        texto: "Intentar cruzar",
+        texto: "Beber agua del arroyo",
         accion: async () => {
-          const exito = Math.random() > 0.5;
-          mostrarTexto(exito ? "¡Logras cruzar con éxito!" : "Caes y te golpeas gravemente.");
-          if (!exito) cambiarVida(-50);
+          mostrarTexto("El agua te refresca y recuperas algo de salud.");
+          cambiarVida(15);
           await esperar(1500);
           avanzarEscena();
         }
       },
       {
-        texto: "Buscar otro camino",
+        texto: "Ignorar el arroyo y seguir adelante",
         accion: async () => {
-          mostrarTexto("Encuentras un pasadizo secreto.");
-          agregarItem({ nombre: "Llave antigua", tipo: "clave" });
+          mostrarTexto("Sigues tu camino, pero el cansancio comienza a notarse.");
+          cambiarVida(-10);
           await esperar(1500);
           avanzarEscena();
         }
@@ -139,21 +146,122 @@ const escenas = [
     ]
   },
   {
-    texto: () => "Has llegado al claro del bosque. Un enemigo poderoso te espera.",
+    texto: () => "Un puente colapsado cruza un abismo oscuro. El viento sopla como si te advirtiera.",
+    opciones: (inventario) => {
+      const baseOpciones = [
+        {
+          texto: "Intentar cruzar con cuidado",
+          accion: async () => {
+            const exito = Math.random() > 0.5;
+            mostrarTexto(exito ? "Logras pasar, aunque tus pasos crujen sobre la madera vieja..." : "La tabla cede. Caída dolorosa.");
+            if (!exito) cambiarVida(-50);
+            await esperar(2000);
+            avanzarEscena();
+          }
+        },
+        {
+          texto: "Buscar un camino alterno",
+          accion: async () => {
+            mostrarTexto("Encuentras un sendero que rodea el abismo, pero te toma más tiempo y energía.");
+            cambiarVida(-15);
+            await esperar(2000);
+            avanzarEscena();
+          }
+        }
+      ];
+      // Solo muestra la opción de la llave si la tienes
+      if (inventario.find(i => i.nombre === "Llave antigua")) {
+        baseOpciones.push({
+          texto: "Usar llave antigua para abrir un portón oculto",
+          accion: async () => {
+            mostrarTexto("Usas la llave antigua y abres un portón oculto bajo el puente. Encuentras un atajo seguro y avanzas sin peligro. La llave se rompe tras usarla.");
+            inventario.splice(inventario.findIndex(i => i.nombre === "Llave antigua"), 1);
+            actualizarIndicadorLlave();
+            await esperar(2000);
+            avanzarEscena();
+          }
+        });
+      }
+      return baseOpciones;
+    }
+  },
+  {
+    texto: () => "Tras cruzar el abismo, el bosque se vuelve más denso. Escuchas ruidos extraños y ves una sombra moverse entre los árboles.",
     opciones: [
       {
-        texto: "Prepararte para luchar",
+        texto: "Investigar la sombra",
         accion: async () => {
+          mostrarTexto("Te acercas sigilosamente y descubres a un esqueleto armado.");
+          await esperar(1500);
+          iniciarCombate(enemigos[1]);
+        }
+      },
+      {
+        texto: "Evitar la sombra y avanzar rápido",
+        accion: async () => {
+          mostrarTexto("Logras evitar el peligro, pero te pierdes y das vueltas durante horas.");
+          cambiarMana(-20);
+          await esperar(1500);
+          avanzarEscena();
+        }
+      }
+    ]
+  },
+  {
+    texto: () => "Encuentras una cabaña abandonada. Dentro hay una nota y una poción.",
+    opciones: [
+      {
+        texto: "Leer la nota",
+        accion: async () => {
+          mostrarTexto("La nota dice: 'Solo los valientes llegarán al final. Confía en tu instinto.'");
+          await esperar(1500);
+          avanzarEscena();
+        }
+      },
+      {
+        texto: "Tomar la poción",
+        accion: async () => {
+          agregarItem({ nombre: "Poción de curación", tipo: "cura", efecto: 30, usos: 1 });
+          mostrarTexto("Guardas la poción en tu inventario.");
+          await esperar(1500);
+          avanzarEscena();
+        }
+      },
+      {
+        texto: "Descansar un momento",
+        accion: async () => {
+          mostrarTexto("Recuperas algo de maná mientras descansas.");
+          cambiarMana(20);
+          await esperar(1500);
+          avanzarEscena();
+        }
+      }
+    ]
+  },
+  {
+    texto: () => "Llegas a un claro. El silencio es antinatural. De la niebla surge una figura encapuchada con ojos brillantes.",
+    opciones: [
+      {
+        texto: "Enfrentar al enemigo",
+        accion: async () => {
+          iniciarCombate(enemigos[2]);
+        }
+      },
+      {
+        texto: "Intentar dialogar",
+        accion: async () => {
+          mostrarTexto("La figura no responde y se prepara para atacar. ¡No hay escapatoria!");
+          await esperar(1500);
           iniciarCombate(enemigos[2]);
         }
       }
     ]
   },
   {
-    texto: () => "¡Felicidades! Has completado la aventura.",
+    texto: () => "🌟 ¡Has superado la prueba del bosque! La oscuridad retrocede... por ahora.",
     opciones: [
       {
-        texto: "Reiniciar juego",
+        texto: "🔁 Reiniciar aventura",
         accion: () => reiniciarJuego()
       }
     ]
@@ -169,17 +277,15 @@ function esperar(ms) {
 
 // Mostrar texto en la escena
 function mostrarTexto(texto) {
-  textoEscena.textContent = texto;
+  if (textoEscena) textoEscena.textContent = texto;
 }
 
 // Cambiar pantalla activa
 function mostrarPantalla(pantalla) {
-  [pantallaBienvenida, pantallaClase, pantallaJuego, pantallaCombate, pantallaMuerte].forEach(p => {
+  document.querySelectorAll('.pantalla').forEach(p => {
     p.classList.remove('activa');
-    p.classList.add('oculto');
   });
-  pantalla.classList.add('activa');
-  pantalla.classList.remove('oculto');
+  if (pantalla) pantalla.classList.add('activa');
 }
 
 // Avanzar escena
@@ -195,12 +301,18 @@ function avanzarEscena() {
 function mostrarEscena() {
   const escena = escenas[escenaActual];
   mostrarPantalla(pantallaJuego);
-  claseActual.textContent = clase;
-  inventarioDOM.textContent = inventario.length > 0 ? inventario.map(i => i.nombre).join(', ') : "Vacío";
+  if (claseActual) claseActual.textContent = clase;
+  if (inventarioDOM) inventarioDOM.textContent = inventario.length > 0 ? inventario.map(i => i.nombre).join(', ') : "Vacío";
   mostrarTexto(typeof escena.texto === "function" ? escena.texto(clase) : escena.texto);
 
-  botonesDecision.innerHTML = '';
-  escena.opciones.forEach(opcion => {
+  if (botonesDecision) botonesDecision.innerHTML = '';
+
+  // Soporte para opciones dinámicas (función que recibe inventario)
+  let opciones = typeof escena.opciones === "function"
+    ? escena.opciones(inventario)
+    : escena.opciones;
+
+  opciones.forEach(opcion => {
     const btn = document.createElement('button');
     btn.textContent = opcion.texto;
     btn.classList.add('btn-principal');
@@ -208,7 +320,7 @@ function mostrarEscena() {
       btn.disabled = true; // Evita doble click
       await opcion.accion();
     });
-    botonesDecision.appendChild(btn);
+    if (botonesDecision) botonesDecision.appendChild(btn);
   });
   actualizarHUD();
 }
@@ -235,33 +347,58 @@ function cambiarMana(cantidad) {
 // Agregar item al inventario
 function agregarItem(item) {
   inventario.push(item);
-  inventarioDOM.textContent = inventario.map(i => i.nombre).join(', ');
+  if (inventarioDOM) inventarioDOM.textContent = inventario.map(i => i.nombre).join(', ');
+  actualizarIndicadorLlave();
 }
 
-// Actualizar HUD y barras con texto y colores
+// --- Indicador de llave ---
+function actualizarIndicadorLlave() {
+  const indicador = document.getElementById('indicador-llave');
+  const llave = inventario.find(i => i.nombre === "Llave antigua");
+  if (indicador) {
+    if (llave) {
+      indicador.style.display = "block";
+      indicador.textContent = `🔑 Llave antigua: 1 uso`;
+    } else {
+      indicador.style.display = "none";
+      indicador.textContent = "";
+    }
+  }
+}
+
+// --- Actualizar HUD y barras con texto y colores
 function actualizarHUD() {
-  vidaActual.textContent = vida;
-  manaActual.textContent = mana;
+  if (vidaActual) vidaActual.textContent = vida;
+  if (manaActual) manaActual.textContent = mana;
+  if (!vidaActual || !manaActual) return; 
 
   // Barras con porcentaje y texto dentro
   const porcentajeVida = (vida / maxVida) * 100;
-  barraVida.style.width = porcentajeVida + '%';
-  textoBarraVida.textContent = `${Math.round(porcentajeVida)}%`;
+  if (barraVida) barraVida.style.width = porcentajeVida + '%';
+  if (textoBarraVida) textoBarraVida.textContent = `${vida} / ${maxVida}`;
 
   const porcentajeMana = (mana / maxMana) * 100;
-  barraMana.style.width = porcentajeMana + '%';
-  textoBarraMana.textContent = `${Math.round(porcentajeMana)}%`;
+  if (barraMana) barraMana.style.width = porcentajeMana + '%';
+  if (textoBarraMana) textoBarraMana.textContent = `${mana} / ${maxMana}`;
 
-  nivelActual.textContent = nivel;
-  experienciaActual.textContent = experiencia;
+  if (nivelActual) nivelActual.textContent = nivel;
+  if (experienciaActual) experienciaActual.textContent = experiencia;
 
   // Actualizar inventario en pantalla de juego
-  inventarioDOM.textContent = inventario.length > 0 ? inventario.map(i => i.nombre).join(', ') : "Vacío";
+  if (inventarioDOM) inventarioDOM.textContent = inventario.length > 0 ? inventario.map(i => i.nombre).join(', ') : "Vacío";
+  actualizarIndicadorLlave();
 }
 
 // Calcular daño aleatorio
 function dañoAleatorio(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// Habilitar o deshabilitar botones de combate
+function habilitarBotonesCombate(habilitar) {
+  if (btnAtacar) btnAtacar.disabled = !habilitar;
+  if (btnMagia) btnMagia.disabled = !habilitar || mana <= 0;
+  if (btnUsarItem) btnUsarItem.disabled = !habilitar;
 }
 
 // Función para iniciar combate
@@ -270,23 +407,16 @@ function iniciarCombate(enemigo) {
   enemigoActual = { ...enemigo }; // Clonar enemigo para modificar vida sin afectar original
   mostrarPantalla(pantallaCombate);
   actualizarCombateHUD();
-  textoCombate.textContent = `¡Un ${enemigoActual.nombre} salvaje aparece!`;
+  if (textoCombate) textoCombate.textContent = `¡Un ${enemigoActual.nombre} salvaje aparece!`;
   habilitarBotonesCombate(true);
-  hechizoInfo.textContent = '';
+  if (hechizoInfo) hechizoInfo.textContent = '';
 }
 
 // Actualizar HUD combate
 function actualizarCombateHUD() {
-  vidaJugador.textContent = vida;
-  manaJugador.textContent = mana;
-  vidaEnemigoSpan.textContent = enemigoActual.vida;
-}
-
-// Habilitar o deshabilitar botones de combate
-function habilitarBotonesCombate(habilitar) {
-  btnAtacar.disabled = !habilitar;
-  btnMagia.disabled = !habilitar || mana <= 0;
-  btnUsarItem.disabled = !habilitar || !inventario.some(i => i.tipo === "cura" && i.usos > 0);
+  if (vidaJugador) vidaJugador.textContent = vida;
+  if (manaJugador) manaJugador.textContent = mana;
+  if (vidaEnemigoSpan && enemigoActual) vidaEnemigoSpan.textContent = enemigoActual.vida;
 }
 
 // Turno del jugador: ataque físico
@@ -294,7 +424,7 @@ function turnoAtacar() {
   if (!enCombate) return;
   const daño = dañoAleatorio(10, 18);
   enemigoActual.vida -= daño;
-  textoCombate.textContent = `¡Atacas al ${enemigoActual.nombre} y causas ${daño} de daño!`;
+  if (textoCombate) textoCombate.textContent = `¡Atacas al ${enemigoActual.nombre} y causas ${daño} de daño!`;
   if (enemigoActual.vida <= 0) {
     enemigoActual.vida = 0;
     ganarCombate();
@@ -307,28 +437,33 @@ function turnoAtacar() {
 // Turno del jugador: usar magia
 function turnoMagia() {
   if (!enCombate) return;
+  if (mana <= 0) {
+    if (textoCombate) textoCombate.textContent = "¡No tienes maná!";
+    habilitarBotonesCombate(true);
+    return;
+  }
   // Seleccionamos hechizo aleatorio que pueda usar (tiene mana suficiente)
   const hechizosPosibles = hechizosDisponibles.filter(h => h.costo <= mana);
   if (hechizosPosibles.length === 0) {
-    textoCombate.textContent = "No tienes suficiente maná para usar magia.";
+    if (textoCombate) textoCombate.textContent = "No tienes suficiente maná para usar magia.";
+    habilitarBotonesCombate(true);
     return;
   }
   const hechizo = hechizosPosibles[Math.floor(Math.random() * hechizosPosibles.length)];
-  hechizoInfo.textContent = `Usas ${hechizo.nombre}`;
+  if (hechizoInfo) hechizoInfo.textContent = `Usas ${hechizo.nombre}`;
   cambiarMana(-hechizo.costo);
 
   if (hechizo.tipo === "daño") {
     enemigoActual.vida -= hechizo.daño;
-    textoCombate.textContent = `¡Lanzas ${hechizo.nombre} y causas ${hechizo.daño} de daño!`;
+    if (textoCombate) textoCombate.textContent = `¡Lanzas ${hechizo.nombre} y causas ${hechizo.daño} de daño!`;
     if (enemigoActual.vida <= 0) {
       enemigoActual.vida = 0;
-      actualizarCombateHUD();
       ganarCombate();
       return;
     }
   } else if (hechizo.tipo === "cura") {
     cambiarVida(hechizo.cura);
-    textoCombate.textContent = `¡Usas ${hechizo.nombre} y te curas ${hechizo.cura} puntos!`;
+    if (textoCombate) textoCombate.textContent = `¡Usas ${hechizo.nombre} y te curas ${hechizo.cura} puntos!`;
   }
   actualizarCombateHUD();
   setTimeout(turnoEnemigo, 1500);
@@ -339,7 +474,7 @@ function turnoEnemigo() {
   if (!enCombate) return;
   const daño = dañoAleatorio(enemigoActual.dañoMin, enemigoActual.dañoMax);
   cambiarVida(-daño);
-  textoCombate.textContent = `${enemigoActual.nombre} te ataca y causa ${daño} de daño!`;
+  if (textoCombate) textoCombate.textContent = `${enemigoActual.nombre} te ataca y causa ${daño} de daño!`;
   actualizarCombateHUD();
   if (vida <= 0) return; // Ya murió y perdió el juego
   habilitarBotonesCombate(true);
@@ -350,13 +485,13 @@ function usarItem() {
   if (!enCombate) return;
   const pocion = inventario.find(i => i.tipo === "cura" && i.usos > 0);
   if (!pocion) {
-    textoCombate.textContent = "No tienes pociones para usar.";
-    btnUsarItem.disabled = true;
+    if (textoCombate) textoCombate.textContent = "No tienes pociones para usar.";
+    if (btnUsarItem) btnUsarItem.disabled = true;
     return;
   }
   cambiarVida(pocion.efecto);
   pocion.usos--;
-  textoCombate.textContent = `Usas una ${pocion.nombre} y recuperas ${pocion.efecto} de vida.`;
+  if (textoCombate) textoCombate.textContent = `Usas una ${pocion.nombre} y recuperas ${pocion.efecto} de vida.`;
   if (pocion.usos === 0) {
     inventario = inventario.filter(i => i.usos > 0);
   }
@@ -369,12 +504,13 @@ function usarItem() {
 // Ganar combate
 function ganarCombate() {
   enCombate = false;
-  textoCombate.textContent = `¡Has derrotado al ${enemigoActual.nombre}!`;
+  if (textoCombate) textoCombate.textContent = `¡Has derrotado al ${enemigoActual.nombre}!`;
   experiencia += 50 + enemigoActual.dañoMax; // Recompensa ejemplo
   nivelUpCheck();
   setTimeout(() => {
     mostrarPantalla(pantallaJuego);
     avanzarEscena();
+    actualizarHUD(); // <-- Aquí
   }, 2000);
 }
 
@@ -387,7 +523,7 @@ function nivelUpCheck() {
     maxMana += 15;
     vida = maxVida;
     mana = maxMana;
-    textoEscena.textContent = `¡Subiste a nivel ${nivel}! Salud y maná aumentados.`;
+    if (textoEscena) textoEscena.textContent = `¡Subiste a nivel ${nivel}! Salud y maná aumentados.`;
   }
   actualizarHUD();
 }
@@ -397,7 +533,7 @@ function perderJuego() {
   enCombate = false;
   mostrarPantalla(pantallaMuerte);
   const mensajeMuerte = document.getElementById('mensaje-muerte');
-  mensajeMuerte.textContent = "Has muerto... ¡Intenta de nuevo!";
+  if (mensajeMuerte) mensajeMuerte.textContent = "Has muerto... ¡Intenta de nuevo!";
 }
 
 // Reiniciar juego
@@ -413,44 +549,136 @@ function reiniciarJuego() {
   escenaActual = 0;
   enCombate = false;
   enemigoActual = null;
-  hechizoInfo.textContent = '';
+  if (hechizoInfo) hechizoInfo.textContent = '';
   mostrarPantalla(pantallaBienvenida);
   actualizarHUD();
-  textoEscena.textContent = '';
-  botonesDecision.innerHTML = '';
+  if (textoEscena) textoEscena.textContent = '';
+  if (botonesDecision) botonesDecision.innerHTML = '';
+  actualizarIndicadorLlave();
+}
+
+// --- Botón continuar ---
+function mostrarBotonContinuar() {
+  // Evita duplicar el botón
+  if (document.getElementById('btn-continuar')) return;
+  const progresoGuardado = localStorage.getItem('progresoJuego');
+  if (progresoGuardado && pantallaBienvenida) {
+    const btnContinuar = document.createElement('button');
+    btnContinuar.textContent = "▶️ Continuar";
+    btnContinuar.className = "btn-principal";
+    btnContinuar.id = "btn-continuar";
+    btnContinuar.addEventListener('click', () => {
+      const p = JSON.parse(localStorage.getItem('progresoJuego'));
+      clase = p.clase;
+      vida = p.vida;
+      mana = p.mana;
+      inventario = p.inventario;
+      nivel = p.nivel;
+      experiencia = p.experiencia;
+      escenaActual = p.escenaActual;
+      mostrarEscena();
+      actualizarIndicadorLlave();
+    });
+    pantallaBienvenida.appendChild(btnContinuar);
+  }
+}
+
+// --- Mensajes flotantes ---
+function mostrarMensaje(texto) {
+  const mensaje = document.getElementById('mensaje-flotante');
+  if (mensaje) {
+    mensaje.textContent = texto;
+    mensaje.style.display = 'block';
+    setTimeout(() => mensaje.style.display = 'none', 3000);
+  }
 }
 
 // --- Event listeners ---
-comenzarBtn.addEventListener('click', () => {
-  mostrarPantalla(pantallaClase);
-});
+if (comenzarBtn) {
+  comenzarBtn.addEventListener('click', () => {
+    mostrarPantalla(pantallaClase);
+  });
+}
 
+// Unificar listeners de selección de clase
 claseBtns.forEach(btn => {
   btn.addEventListener('click', () => {
     clase = btn.getAttribute('data-clase');
-    claseActual.textContent = clase;
+    if (clase === 'Guerrero') {
+      vida = 130; mana = 60;
+    } else if (clase === 'Mago') {
+      vida = 90; mana = 130;
+    } else if (clase === 'Pícaro') {
+      vida = 110; mana = 90;
+    }
+    maxVida = vida;
+    maxMana = mana;
+    if (claseActual) claseActual.textContent = clase;
     mostrarEscena();
   });
 });
 
-reiniciarBtn.addEventListener('click', reiniciarJuego);
-reiniciarBtnMuerte.addEventListener('click', reiniciarJuego);
+if (reiniciarBtn) reiniciarBtn.addEventListener('click', reiniciarJuego);
+if (reiniciarBtnMuerte) reiniciarBtnMuerte.addEventListener('click', reiniciarJuego);
 
-btnAtacar.addEventListener('click', () => {
-  habilitarBotonesCombate(false);
-  turnoAtacar();
-});
+if (btnAtacar) {
+  btnAtacar.addEventListener('click', () => {
+    habilitarBotonesCombate(false);
+    turnoAtacar();
+  });
+}
 
-btnMagia.addEventListener('click', () => {
-  habilitarBotonesCombate(false);
-  turnoMagia();
-});
+if (btnMagia) {
+  btnMagia.addEventListener('click', () => {
+    habilitarBotonesCombate(false);
+    turnoMagia();
+  });
+}
 
-btnUsarItem.addEventListener('click', () => {
-  habilitarBotonesCombate(false);
-  usarItem();
-});
+if (btnUsarItem) {
+  btnUsarItem.addEventListener('click', () => {
+    habilitarBotonesCombate(false);
+    usarItem();
+  });
+}
+
+const btnGuardar = document.getElementById('btn-guardar');
+if (btnGuardar) {
+  btnGuardar.addEventListener('click', () => {
+    const progreso = {
+      clase, vida, mana, inventario, nivel, experiencia, escenaActual
+    };
+    localStorage.setItem('progresoJuego', JSON.stringify(progreso));
+    mostrarMensaje("Progreso guardado!");
+    mostrarPantalla(pantallaBienvenida);
+    mostrarBotonContinuar();
+  });
+}
+
+const progresoGuardado = localStorage.getItem('progresoJuego');
+if (progresoGuardado) {
+  const btnCargar = document.createElement('button');
+  btnCargar.textContent = "📂 Cargar Progreso";
+  btnCargar.className = "btn-principal";
+  btnCargar.addEventListener('click', () => {
+    const p = JSON.parse(localStorage.getItem('progresoJuego'));
+    clase = p.clase;
+    vida = p.vida;
+    mana = p.mana;
+    inventario = p.inventario;
+    nivel = p.nivel;
+    experiencia = p.experiencia;
+    escenaActual = p.escenaActual;
+    mostrarEscena();
+  });
+  if (pantallaBienvenida) pantallaBienvenida.appendChild(btnCargar);
+}
 
 // --- Inicializar HUD ---
-actualizarHUD();
-mostrarPantalla(pantallaBienvenida);
+document.addEventListener('DOMContentLoaded', async () => {
+  await cargarDatos();
+  actualizarHUD();
+  mostrarPantalla(pantallaBienvenida);
+  mostrarBotonContinuar();
+  actualizarIndicadorLlave();
+});

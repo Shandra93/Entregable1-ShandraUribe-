@@ -10,24 +10,24 @@
 <body>
 
   <!-- Pantalla de bienvenida -->
-  <div id="pantalla-bienvenida" class="pantalla activa">
-    <h1>Aventura 8-Bit</h1>
-    <button id="comenzar-btn" class="btn-principal">Comenzar</button>
+  <div id="pantalla-bienvenida" class="pantalla activa parpadeo-borde">
+    <h1 class="texto-brillante">Aventura 8-Bit</h1>
+    <button id="comenzar-btn" class="btn-principal parpadeo">Comenzar</button>
   </div>
 
   <!-- Pantalla de selección de clase -->
-  <div id="pantalla-clase" class="pantalla oculto">
-    <h2>Elige tu clase</h2>
+  <div id="pantalla-clase" class="pantalla oculto parpadeo-borde">
+    <h2 class="texto-brillante">Elige tu clase</h2>
     <div class="clases">
-      <button class="clase-btn" data-clase="Guerrero">🗡️ Guerrero</button>
-      <button class="clase-btn" data-clase="Mago">🧙 Mago</button>
-      <button class="clase-btn" data-clase="Pícaro">🗡️ Pícaro</button>
+      <button class="clase-btn parpadeo" data-clase="Guerrero">🗡️ Guerrero</button>
+      <button class="clase-btn parpadeo" data-clase="Mago">🧙 Mago</button>
+      <button class="clase-btn parpadeo" data-clase="Pícaro">🗡️ Pícaro</button>
     </div>
   </div>
 
   <!-- Pantalla del juego -->
   <div id="pantalla-juego" class="pantalla oculto">
-    <h2>Clase: <span id="clase-actual"></span></h2>
+    <h2>Clase: <span id="clase-actual" class="texto-brillante"></span></h2>
 
     <div id="hud">
       <div class="barra-container vida">
@@ -36,14 +36,15 @@
         </div>
       </div>
       <div class="barra-container mana">
-        <div id="barra-mana" class="barra">
+        <div id="barra-mana" class="barra mana">
           <span id="texto-barra-mana" class="barra-texto">100 / 100</span>
         </div>
       </div>
 
+      <div id="indicador-llave" style="display:none;"></div>
       <p>Inventario: <span id="inventario">Vacío</span></p>
 
-      <div id="estadisticas-jugador" style="margin-top: 10px;">
+      <div id="estadisticas-jugador">
         Nivel: <span id="nivel-actual">1</span> |
         Experiencia: <span id="experiencia-actual">0</span> / 100
       </div>
@@ -53,19 +54,17 @@
       <div class="botones-secundarios">
         <button id="btn-guardar">Guardar Progreso</button>
         <button id="reiniciar-btn">🔄 Reiniciar Juego</button>
-
         <button id="btn-borrar-progreso" style="display: none;">Borrar Progreso</button>
       </div>
     </div>
 
     <div id="texto-escena" class="texto-escena"></div>
     <div id="botones-decision"></div>
-
   </div>
 
   <!-- Pantalla de combate -->
-  <div id="pantalla-combate" class="pantalla oculto">
-    <h2>⚔️ Combate</h2>
+  <div id="pantalla-combate" class="pantalla oculto parpadeo-borde">
+    <h2 class="texto-brillante">⚔️ Combate</h2>
 
     <p>🧟 Vida enemigo: <span id="vida-enemigo">50</span></p>
     <p>❤️ Vida jugador: <span id="vida-jugador">100</span></p>
@@ -74,22 +73,24 @@
     <p id="texto-combate">El combate ha comenzado...</p>
 
     <div id="acciones-combate">
-      <button id="btn-atacar">Atacar</button>
-      <button id="btn-magia">Usar Magia</button>
-      <button id="btn-usar-item" disabled>Usar Ítem</button>
+      <button id="btn-atacar" class="parpadeo">Atacar</button>
+      <button id="btn-magia" class="parpadeo">Usar Magia</button>
+      <button id="btn-usar-item" disabled class="parpadeo">Usar Ítem</button>
     </div>
   </div>
 
   <!-- Pantalla de muerte o final -->
-  <div id="pantalla-muerte" class="pantalla oculto">
-    <h2 id="mensaje-muerte"></h2>
-    <button id="reiniciar-btn-muerte">🔁 Reiniciar Juego</button>
+  <div id="pantalla-muerte" class="pantalla oculto parpadeo-borde">
+    <h2 id="mensaje-muerte" class="texto-brillante"></h2>
+    <button id="reiniciar-btn-muerte" class="btn-principal parpadeo">🔁 Reiniciar Juego</button>
   </div>
 
   <!-- Botón flotante de prueba de combate -->
   <div id="btn-probar-combate-container" style="display: none; position: fixed; bottom: 10px; right: 10px;">
-    <button id="btn-probar-combate">⚔️ Probar Combate</button>
+    <button id="btn-probar-combate" class="parpadeo">⚔️ Probar Combate</button>
   </div>
+
+  <div id="mensaje-flotante" style="display:none;" class="mensaje-flotante"></div>
 
   <script src="script.js"></script>
 </body>

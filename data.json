@@ -1,0 +1,14 @@
+{
+  "hechizos": [
+    { "nombre": "Bola de Fuego", "tipo": "daño", "daño": 30, "costo": 25 },
+    { "nombre": "Rayo Helado", "tipo": "daño", "daño": 20, "costo": 15 },
+    { "nombre": "Sanación", "tipo": "cura", "cura": 25, "costo": 20 },
+    { "nombre": "Viento Arcano", "tipo": "daño", "daño": 15, "costo": 10 },
+    { "nombre": "Luz Sagrada", "tipo": "cura", "cura": 35, "costo": 30 }
+  ],
+  "enemigos": [
+    { "nombre": "Lobo", "vida": 40, "dañoMin": 5, "dañoMax": 12 },
+    { "nombre": "Esqueleto", "vida": 50, "dañoMin": 8, "dañoMax": 15 },
+    { "nombre": "Jefe Sombra", "vida": 80, "dañoMin": 10, "dañoMax": 20 }
+  ]
+}
