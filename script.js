@@ -312,14 +312,18 @@ function mostrarEscena() {
     ? escena.opciones(inventario)
     : escena.opciones;
 
+  // Crear todos los botones y desactivarlos al hacer clic en cualquiera
+  const botones = [];
   opciones.forEach(opcion => {
     const btn = document.createElement('button');
     btn.textContent = opcion.texto;
     btn.classList.add('btn-principal');
     btn.addEventListener('click', async () => {
-      btn.disabled = true; // Evita doble click
+      // Desactiva todos los botones de la escena
+      botones.forEach(b => b.disabled = true);
       await opcion.accion();
     });
+    botones.push(btn);
     if (botonesDecision) botonesDecision.appendChild(btn);
   });
   actualizarHUD();

@@ -26,7 +26,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  width: 400px;
+  width: 600px;
   height: auto;
   min-width: 250px;
   min-height: 250px;
@@ -138,7 +138,7 @@ h2 {
 
 #inventario {
   color: #00e0ff;
-  font-size: 13px;
+  font-size: 10px;
   margin-bottom: 6px;
   text-align: center;
   word-break: break-word;
