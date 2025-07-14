@@ -1,49 +1,55 @@
-Entrega N°2
-Estructura del simulador
+Proyecto Final: Simulador interactivo en JavaScript
 Objetivos generales
 
-Mostrar tu simulador JS interactuando con HTML
+Crear un simulador interactivo
 
-Integrar las herramientas JS aprendidas hasta aquí
+Puede ser un Ecommerce, Cotizador de productos/servicios, Simulador de Home banking con transacciones, Convertidor de monedas/criptomonedas, entre otros.
 
 Objetivos específicos
 
-Modifica su estructura anterior, integrando JS con JavaScript mediante el uso de DOM y Eventos.
+Utilizar datos remotos (o simularlos con JSON)
 
-Programa el circuito de interacción completo de la lógica de tu aplicación web, agregando las nuevas herramientas JS aprendidas
+HTML interactivo (generado desde JS)
 
-Guarda tus objetos o arrays de objetos en localstorage para dejar disponible los datos agregados por el usuario ejemplo(los productos en un carrito de compras)
+Uso de las herramientas más importantes de JS, y librerías externas
 
-Se debe entregar
+Tiene que ser 100% funcional y con la lógica de negocio de tu proyecto elegido (Ejemplo: si creas un Ecommerce, simula el proceso completo de compra) <---------------> Se debe entregar
 
-Documento HTML + CSS (al menos uno)
 
-Archivo(s) JS referenciado(s) en el HTML
+Proyecto HTML + CSS + JS funcional
+
 
 Formato
 
-Archivo en formato .ZIP con la carpeta y los archivos del proyecto. Debe contener el nombre “Entregable2+Apellido”
+Archivo en formato .ZIP (NO en formato RAR)
 
-Guarda los archivos JS, CSS y JSON en subcarpetas <---------------> Sugerencias
+Link a subcarpeta de GDrive
 
+Link a repositorio de Github (el preferido)
 
-En esta etapa debes integrar JavaScript con HTML y/o con CSS
-Termina de diseñar la estética visual necesaria en tu webapp con CSS y/o un framework CSS
-Los algoritmos de JS deben ser invocados desde HTML, e interactuar con el contenido web, creando HTML, leyendo y procesando datos ingresados desde formularios, inputs, etcétera
-Elimina toda interacción con la Consola JS, convirtiendo esta interacción en el DOM del HTML
+debe tener el nombre “ProyectoFinal+Apellido”
 
-Criterios de evaluación
+Sugerencias
+
+Elimina console.log y derivados
+
+Reemplaza alert, prompt, confirm por una librería JS
+
+Si incluyes formularios a completar,
+precarga datos en los campos
+<---------------> ## Criterios de evaluación
+
 Funcionalidad
-Se simula uno o más flujos de trabajo en términos de entrada, proceso y salida. La funcionalidad es apropiada al contexto del simulador. Carece de errores de cómputo durante el procesamiento.
+Se simula uno o más flujo de trabajo en termino de entrada-procesamiento-salida y no se advierten errores de cómputo.
 
 Interactividad
-Se capturan entradas ingresadas por el usuario mediante eventos. Se efectúan una o más salidas por HTML modificando el DOM. Existe un control de ingreso de entradas y las salidas son coherentes en relación a los datos ingresados.
+Se capturan entradas empleando inputs y eventos adecuados. Las salidas son coherentes en relación a los datos ingresados y se visualizan en el HTML de forma asíncrona.
 
 Escalabilidad
-Se declaran funciones con parámetros para definir instrucciones con una tarea específica. Se emplean arrays para agrupar valores relacionados. Se definen objetos con propiedades y métodos relevantes al contexto. Se establece un criterio homogéneo para la detección de eventos. Se almacena en storage datos relevantes generados durante la simulación
+Se declaran funciones con parámetros para definir instrucciones con una tarea específica. Se definen objetos con propiedades y métodos relevantes al contexto. Se emplean arrays para agrupar valores y objetos de forma dinámica. El recorrido de las colecciones es óptimo.
 
 Integridad
-Se define el código JavaScript en un archivo .js, referenciándolo correctamente desde el HTML. Se evitan métodos prompt() y alert() para evitar interrupciones durante el procesamiento y actualización del DOM. La información estática del proyecto se emplea adecuadamente
+Se definen el código JavaScript en un archivo .js, referenciándolo correctamente desde el HTML. La información estática en formato JSON se utiliza adecuadamente, cargandose de forma asíncrona.
 
 Legibilidad
-Los nombres de variables. funciones y objetos son significativos para el contexto. Las instrucciones se escriben de forma legible y se emplean comentarios oportunos. El código fuente es ordenado en términos de declaración y secuencia.
+Los nombres de variables. funciones y objetos son significativos para el contexto, las instrucciones se escriben de forma legible y se emplean comentarios oportunos. El código fuente es ordenado en términos de declaración y secuencia.
