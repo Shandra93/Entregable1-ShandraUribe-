@@ -1,4 +1,3 @@
-// --- Variables y elementos DOM ---
 const pantallaBienvenida = document.getElementById('pantalla-bienvenida');
 const pantallaClase = document.getElementById('pantalla-clase');
 const pantallaJuego = document.getElementById('pantalla-juego');
@@ -36,7 +35,6 @@ const btnUsarItem = document.getElementById('btn-usar-item');
 
 const hechizoInfo = document.getElementById('hechizo-info');
 
-// --- Estado del jugador ---
 let clase = '';
 let vida = 100;
 let mana = 100;
@@ -48,14 +46,11 @@ let maxMana = 100;
 
 let escenaActual = 0;
 
-// --- Estado de combate ---
 let enCombate = false;
 let enemigoActual = null;
 
-// --- Hechizos ---
 let hechizosDisponibles = [];
 
-// --- Enemigos ---
 let enemigos = [];
 
 async function cargarDatos() {
@@ -65,7 +60,6 @@ async function cargarDatos() {
   enemigos = data.enemigos;
 }
 
-// --- Escenas ---
 const escenas = [
   {
     texto: (clase) => `Como ${clase}, despiertas entre hojas húmedas y el eco de criaturas lejanas. Una poción burbujea junto a ti, como si te esperara.`,
@@ -169,7 +163,6 @@ const escenas = [
           }
         }
       ];
-      // Solo muestra la opción de la llave si la tienes
       if (inventario.find(i => i.nombre === "Llave antigua")) {
         baseOpciones.push({
           texto: "Usar llave antigua para abrir un portón oculto",
@@ -270,17 +263,14 @@ const escenas = [
 
 // --- Funciones principales ---
 
-// Utilidad para esperar
 function esperar(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// Mostrar texto en la escena
 function mostrarTexto(texto) {
   if (textoEscena) textoEscena.textContent = texto;
 }
 
-// Cambiar pantalla activa
 function mostrarPantalla(pantalla) {
   document.querySelectorAll('.pantalla').forEach(p => {
     p.classList.remove('activa');
@@ -288,7 +278,6 @@ function mostrarPantalla(pantalla) {
   if (pantalla) pantalla.classList.add('activa');
 }
 
-// Avanzar escena
 function avanzarEscena() {
   escenaActual++;
   if (escenaActual >= escenas.length) {
@@ -297,7 +286,6 @@ function avanzarEscena() {
   mostrarEscena();
 }
 
-// Mostrar escena actual
 function mostrarEscena() {
   const escena = escenas[escenaActual];
   mostrarPantalla(pantallaJuego);
@@ -307,19 +295,16 @@ function mostrarEscena() {
 
   if (botonesDecision) botonesDecision.innerHTML = '';
 
-  // Soporte para opciones dinámicas (función que recibe inventario)
   let opciones = typeof escena.opciones === "function"
     ? escena.opciones(inventario)
     : escena.opciones;
 
-  // Crear todos los botones y desactivarlos al hacer clic en cualquiera
   const botones = [];
   opciones.forEach(opcion => {
     const btn = document.createElement('button');
     btn.textContent = opcion.texto;
     btn.classList.add('btn-principal');
     btn.addEventListener('click', async () => {
-      // Desactiva todos los botones de la escena
       botones.forEach(b => b.disabled = true);
       await opcion.accion();
     });
@@ -329,7 +314,6 @@ function mostrarEscena() {
   actualizarHUD();
 }
 
-// Cambiar vida jugador
 function cambiarVida(cantidad) {
   vida += cantidad;
   if (vida > maxVida) vida = maxVida;
@@ -340,7 +324,6 @@ function cambiarVida(cantidad) {
   actualizarHUD();
 }
 
-// Cambiar mana jugador
 function cambiarMana(cantidad) {
   mana += cantidad;
   if (mana > maxMana) mana = maxMana;
@@ -348,14 +331,12 @@ function cambiarMana(cantidad) {
   actualizarHUD();
 }
 
-// Agregar item al inventario
 function agregarItem(item) {
   inventario.push(item);
   if (inventarioDOM) inventarioDOM.textContent = inventario.map(i => i.nombre).join(', ');
   actualizarIndicadorLlave();
 }
 
-// --- Indicador de llave ---
 function actualizarIndicadorLlave() {
   const indicador = document.getElementById('indicador-llave');
   const llave = inventario.find(i => i.nombre === "Llave antigua");
@@ -370,13 +351,11 @@ function actualizarIndicadorLlave() {
   }
 }
 
-// --- Actualizar HUD y barras con texto y colores
 function actualizarHUD() {
   if (vidaActual) vidaActual.textContent = vida;
   if (manaActual) manaActual.textContent = mana;
   if (!vidaActual || !manaActual) return; 
 
-  // Barras con porcentaje y texto dentro
   const porcentajeVida = (vida / maxVida) * 100;
   if (barraVida) barraVida.style.width = porcentajeVida + '%';
   if (textoBarraVida) textoBarraVida.textContent = `${vida} / ${maxVida}`;
@@ -388,27 +367,23 @@ function actualizarHUD() {
   if (nivelActual) nivelActual.textContent = nivel;
   if (experienciaActual) experienciaActual.textContent = experiencia;
 
-  // Actualizar inventario en pantalla de juego
   if (inventarioDOM) inventarioDOM.textContent = inventario.length > 0 ? inventario.map(i => i.nombre).join(', ') : "Vacío";
   actualizarIndicadorLlave();
 }
 
-// Calcular daño aleatorio
 function dañoAleatorio(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// Habilitar o deshabilitar botones de combate
 function habilitarBotonesCombate(habilitar) {
   if (btnAtacar) btnAtacar.disabled = !habilitar;
   if (btnMagia) btnMagia.disabled = !habilitar || mana <= 0;
   if (btnUsarItem) btnUsarItem.disabled = !habilitar;
 }
 
-// Función para iniciar combate
 function iniciarCombate(enemigo) {
   enCombate = true;
-  enemigoActual = { ...enemigo }; // Clonar enemigo para modificar vida sin afectar original
+  enemigoActual = { ...enemigo }; 
   mostrarPantalla(pantallaCombate);
   actualizarCombateHUD();
   if (textoCombate) textoCombate.textContent = `¡Un ${enemigoActual.nombre} salvaje aparece!`;
@@ -416,14 +391,12 @@ function iniciarCombate(enemigo) {
   if (hechizoInfo) hechizoInfo.textContent = '';
 }
 
-// Actualizar HUD combate
 function actualizarCombateHUD() {
   if (vidaJugador) vidaJugador.textContent = vida;
   if (manaJugador) manaJugador.textContent = mana;
   if (vidaEnemigoSpan && enemigoActual) vidaEnemigoSpan.textContent = enemigoActual.vida;
 }
 
-// Turno del jugador: ataque físico
 function turnoAtacar() {
   if (!enCombate) return;
   const daño = dañoAleatorio(10, 18);
@@ -438,7 +411,6 @@ function turnoAtacar() {
   }
 }
 
-// Turno del jugador: usar magia
 function turnoMagia() {
   if (!enCombate) return;
   if (mana <= 0) {
@@ -446,7 +418,6 @@ function turnoMagia() {
     habilitarBotonesCombate(true);
     return;
   }
-  // Seleccionamos hechizo aleatorio que pueda usar (tiene mana suficiente)
   const hechizosPosibles = hechizosDisponibles.filter(h => h.costo <= mana);
   if (hechizosPosibles.length === 0) {
     if (textoCombate) textoCombate.textContent = "No tienes suficiente maná para usar magia.";
@@ -473,18 +444,16 @@ function turnoMagia() {
   setTimeout(turnoEnemigo, 1500);
 }
 
-// Turno enemigo
 function turnoEnemigo() {
   if (!enCombate) return;
   const daño = dañoAleatorio(enemigoActual.dañoMin, enemigoActual.dañoMax);
   cambiarVida(-daño);
   if (textoCombate) textoCombate.textContent = `${enemigoActual.nombre} te ataca y causa ${daño} de daño!`;
   actualizarCombateHUD();
-  if (vida <= 0) return; // Ya murió y perdió el juego
+  if (vida <= 0) return; 
   habilitarBotonesCombate(true);
 }
 
-// Usar ítem (poción)
 function usarItem() {
   if (!enCombate) return;
   const pocion = inventario.find(i => i.tipo === "cura" && i.usos > 0);
@@ -505,20 +474,18 @@ function usarItem() {
   setTimeout(turnoEnemigo, 1500);
 }
 
-// Ganar combate
 function ganarCombate() {
   enCombate = false;
   if (textoCombate) textoCombate.textContent = `¡Has derrotado al ${enemigoActual.nombre}!`;
-  experiencia += 50 + enemigoActual.dañoMax; // Recompensa ejemplo
+  experiencia += 50 + enemigoActual.dañoMax; 
   nivelUpCheck();
   setTimeout(() => {
     mostrarPantalla(pantallaJuego);
     avanzarEscena();
-    actualizarHUD(); // <-- Aquí
+    actualizarHUD(); 
   }, 2000);
 }
 
-// Verificar subida de nivel
 function nivelUpCheck() {
   if (experiencia >= 100) {
     experiencia -= 100;
@@ -532,15 +499,19 @@ function nivelUpCheck() {
   actualizarHUD();
 }
 
-// Perder juego
 function perderJuego() {
   enCombate = false;
   mostrarPantalla(pantallaMuerte);
   const mensajeMuerte = document.getElementById('mensaje-muerte');
   if (mensajeMuerte) mensajeMuerte.textContent = "Has muerto... ¡Intenta de nuevo!";
+  Swal.fire({
+    title: '¡Juego terminado!',
+    text: 'Has muerto... ¡Intenta de nuevo!',
+    icon: 'error',
+    confirmButtonText: 'Reintentar'
+  });
 }
 
-// Reiniciar juego
 function reiniciarJuego() {
   clase = '';
   vida = 100;
@@ -561,9 +532,7 @@ function reiniciarJuego() {
   actualizarIndicadorLlave();
 }
 
-// --- Botón continuar ---
 function mostrarBotonContinuar() {
-  // Evita duplicar el botón
   if (document.getElementById('btn-continuar')) return;
   const progresoGuardado = localStorage.getItem('progresoJuego');
   if (progresoGuardado && pantallaBienvenida) {
@@ -587,7 +556,6 @@ function mostrarBotonContinuar() {
   }
 }
 
-// --- Mensajes flotantes ---
 function mostrarMensaje(texto) {
   const mensaje = document.getElementById('mensaje-flotante');
   if (mensaje) {
@@ -597,14 +565,12 @@ function mostrarMensaje(texto) {
   }
 }
 
-// --- Event listeners ---
 if (comenzarBtn) {
   comenzarBtn.addEventListener('click', () => {
     mostrarPantalla(pantallaClase);
   });
 }
 
-// Unificar listeners de selección de clase
 claseBtns.forEach(btn => {
   btn.addEventListener('click', () => {
     clase = btn.getAttribute('data-clase');
@@ -685,4 +651,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   mostrarPantalla(pantallaBienvenida);
   mostrarBotonContinuar();
   actualizarIndicadorLlave();
+});
+
+Swal.fire({
+  title: '¡Victoria!',
+  text: '¡Has superado la prueba del bosque!',
+  icon: 'success',
+  confirmButtonText: 'Aceptar'
 });
